@@ -1,0 +1,680 @@
+:root {
+  --bg: #0f1720;
+  --panel: #111827;
+  --muted: #9aa4b2;
+  --accent: #6366f1;
+  --accent-2: #34d399;
+  --card-bg: #0b1220;
+  --glass: rgba(255,255,255,0.03);
+  color-scheme: dark;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+html.discord-embed {
+  --bg: #0f1720;
+  --panel: #111827;
+  --muted: #9aa4b2;
+  --accent: #6366f1;
+  --accent-2: #34d399;
+  --card-bg: #0b1220;
+  --glass: rgba(255,255,255,0.03);
+  color-scheme: dark;
+  color: #e6eef8;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.discord-embed,
+html.discord-embed body,
+html.discord-embed .container,
+html.discord-embed .panel,
+html.discord-embed .board,
+html.discord-embed input,
+html.discord-embed select,
+html.discord-embed button,
+html.discord-embed table,
+html.discord-embed thead th,
+html.discord-embed td {
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #e6eef8 !important;
+  border-color: rgba(255,255,255,0.04) !important;
+}
+
+/* Explicit dark backgrounds for key surfaces */
+html.discord-embed body {
+  background: linear-gradient(180deg, var(--bg), #071024) !important;
+}
+html.discord-embed .container {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent) !important;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6) !important;
+}
+html.discord-embed .panel {
+  background: rgba(255,255,255,0.02) !important;
+}
+html.discord-embed .board {
+  background: var(--card-bg) !important;
+}
+html.discord-embed td {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)) !important;
+}
+
+@media (prefers-color-scheme: light) {
+  html.discord-embed body { background: linear-gradient(180deg, var(--bg), #071024) !important; color: #e6eef8 !important; }
+  html.discord-embed td { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)) !important; }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--bg), #071024);
+  color: #e6eef8;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.container {
+  width: 98%;
+  max-width: 1200px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+.logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+#themeDisplay { color: var(--muted); }
+
+.panel {
+  background: rgba(255,255,255,0.02);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.players ul { list-style: none; padding: 0; margin: 6px 0 0 0; display:flex; gap:10px; flex-wrap:wrap; }
+.players li {
+  background: var(--glass);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: #cfe7ff;
+}
+
+.controls {
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+input, select, button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  color: inherit;
+  font-size: 0.95rem;
+}
+
+button {
+  cursor:pointer;
+  transition: transform 120ms ease, box-shadow 120ms;
+}
+button:active { transform: translateY(1px); }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.board-grid .cell:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Improved color contrast */
+.players li {
+  color: #e6f0ff;
+}
+
+.msg {
+  color: #ffffff;
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .board-grid .cell:hover {
+    transform: none !important;
+  }
+}
+
+.boards {
+  display: flex !important;
+  gap: 0px !important;
+  justify-content: center !important;
+  margin: 4px 0 !important;
+  padding: 0 !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+}
+
+.board {
+  background: var(--card-bg);
+  padding: 4px !important;
+  margin: 0 !important;
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  width: 100% !important;
+}
+
+/* Board-grid base styles (apply whenever JS renders .board-grid)
+   Keep these outside the mobile-only media query so the JS-rendered grid
+   has predictable styling even if the media query boundaries differ in some hosts.
+*/
+.board-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 4px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+.board-grid .cell {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  min-height: 60px !important;
+  max-height: 60px !important;
+  aspect-ratio: 1 / 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1px !important;
+  margin: 0 !important;
+  text-align: center !important;
+  overflow: hidden !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  font-size: 0.65rem !important;
+  line-height: 1.0 !important;
+  cursor: pointer !important;
+  transition: transform 0.1s ease, background-color 0.2s ease !important;
+}
+.board-grid .cell:hover {
+  transform: scale(1.01) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+}
+.board-grid .cell .cell-inner {
+  padding: 1px !important;
+  margin: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+.board-grid .cell.marked {
+  background: linear-gradient(180deg, rgba(52,211,153,0.12), rgba(52,211,153,0.06)) !important;
+  border-color: rgba(52,211,153,0.25) !important;
+  box-shadow: 0 3px 9px rgba(52,211,153,0.06) !important;
+}
+.board-grid .cell.free-cell {
+  background: linear-gradient(180deg, rgba(99,102,241,0.08), rgba(99,102,241,0.03)) !important;
+  cursor: default !important;
+}
+.board-grid .cell.free-cell .cell-inner {
+  font-weight: 600 !important;
+  color: inherit !important;
+  font-size: 0.7rem !important;
+}
+
+/* Hide any table-based layout completely */
+table { display: none !important; }
+thead, tbody, tr, td, th { display: none !important; }
+
+/* Force all cell-inner elements to use our optimized styles */
+.cell-inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  text-align: center !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  box-sizing: border-box !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.called { margin-left:8px; color: var(--muted); }
+
+.messages { position:relative; margin-top:10px; display:flex; flex-direction:column-reverse; gap:6px; max-height:140px; overflow:auto; }
+.msg { padding:8px 10px; border-radius:8px; background: rgba(255,255,255,0.02); color: #dbeeff; font-size:0.9rem;}
+.msg.success { border-left:4px solid var(--accent-2); }
+.msg.error { border-left:4px solid #f87171; color:#ffdede; }
+.msg.warn { border-left:4px solid #f59e0b; color:#fff6e6; }
+
+@media (prefers-color-scheme: light) {
+  :root { color-scheme: light; --bg:#f6fafc; --panel:#ffffff; --muted:#526878; --accent:#4f46e5; --card-bg:#f8fbff; --glass: rgba(0,0,0,0.04); color: #0f1720; }
+  body { background: linear-gradient(180deg,#f8fafb,#e6f0f8); color: #0b1220; }
+  td { background: #ffffff; }
+}
+
+/* Desktop-specific styles */
+@media (min-width: 641px) {
+  html.discord-embed .container {
+    padding: 24px;
+  }
+  
+  html.discord-embed header {
+    margin-bottom: 24px;
+    border: 2px solid #6366f1; /* Temporary border for testing */
+  }
+  
+  html.discord-embed header h1 {
+    font-size: 2rem;
+  }
+  
+  html.discord-embed .logo {
+    width: 64px;
+    height: 64px;
+  }
+  
+  html.discord-embed .board-grid .cell {
+    min-height: 100px !important;
+    max-height: 100px !important;
+    font-size: 0.85rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  html.discord-embed .controls {
+    gap: 16px;
+    flex-wrap: nowrap;
+  }
+  
+  html.discord-embed .messages {
+    max-height: 240px;
+  }
+  
+  html.discord-embed .panel {
+    padding: 20px;
+  }
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+  /* Make the bingo table adapt to narrow screens:
+     - Use fixed table layout so columns share available width
+     - Allow words to wrap cleanly and enable hyphenation where appropriate
+     - Use aspect-ratio to keep cells roughly square and increase tap targets
+  */
+  table { min-width: 0; width: 100%; table-layout: fixed; }
+  thead th { width: 20%; padding: 6px; box-sizing: border-box; }
+  td {
+    width: auto;
+    height: auto;
+    min-height: 56px;
+    font-size: 0.9rem;
+    padding: 6px;
+    /* Prefer clean word breaks and hyphenation over breaking mid-word */
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    white-space: normal;
+
+    /* Maintain visual rounding */
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  /* Reduce container padding on small screens */
+  .container { padding: 4px !important; }
+
+  /* Make controls stack vertically on small screens for easier tapping */
+  .controls { flex-direction: column; align-items: stretch; gap: 10px; }
+
+  /* Players pill spacing */
+  .players ul { gap: 8px; }
+
+  /* Make form controls full-width and larger tap targets */
+  input, select, button { width: 100%; box-sizing: border-box; }
+  button, input { min-height: 48px; font-size: 1rem; }
+
+  /* Boards: show as a single column, centered, with sensible max-width.
+     Also allow horizontal scrolling if the content needs it on very narrow devices.
+  */
+  /* Boards container: allow boards to use full available width while preventing
+     the board from exceeding the container on narrow viewports. Use overflow
+     to allow horizontal scrolling if the host constrains width (Discord webviews).
+  */
+  .boards {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  /* Let the board occupy the available width but never exceed the parent.
+     Increase the max width slightly so 5 columns can fit comfortably on phones.
+  */
+  .board {
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 2px !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Mobile-friendly grid layout when JS renders .board-grid.
+     Use a responsive, evenly spaced 5-column grid that adapts to the board width.
+     Keep cells square via aspect-ratio and allow the grid to scroll horizontally
+     if the host container is too narrow.
+  */
+  .board-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .board-grid .cell {
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)) !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    border-radius: 3px !important;
+    box-sizing: border-box !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+    aspect-ratio: 1 / 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1px !important;
+    margin: 0 !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    font-size: 0.8rem !important;
+    line-height: 0.9 !important;
+  }
+
+  .board-grid .cell .cell-inner {
+    padding: 0px !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+
+  .board-grid .cell.marked {
+    background: linear-gradient(180deg, rgba(52,211,153,0.12), rgba(52,211,153,0.06)) !important;
+    border-color: rgba(52,211,153,0.25) !important;
+    box-shadow: 0 3px 9px rgba(52,211,153,0.06) !important;
+  }
+  .board-grid .cell.free-cell {
+    background: linear-gradient(180deg, rgba(99,102,241,0.08), rgba(99,102,241,0.03)) !important;
+    cursor: default !important;
+  }
+  .board-grid .cell.free-cell .cell-inner {
+    font-weight: 600 !important;
+    color: inherit !important;
+    font-size: 0.65rem !important;
+  }
+
+  /* Reduce header spacing and scale down title/logo for phones */
+  header { gap: 10px; align-items: center; }
+  header h1 { font-size: 1.2rem; }
+  .logo { width: 40px; height: 40px; }
+
+  /* Compact messages area (toggleable via JS) to free vertical space */
+  .messages {
+    max-height: 6.5rem; /* keep log short by default on mobile */
+    overflow: hidden;
+    padding-right: 8px;
+  }
+  .messages.compact {
+    max-height: 3.2rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .messages.compact::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2.2rem;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.25));
+    pointer-events: none;
+  }
+
+  /* Small toggle button for messages (styled to match the UI) */
+  .compact-toggle {
+    appearance: none;
+    border: 1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color: inherit;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    min-height: 40px;
+    cursor: pointer;
+  }
+
+  /* Touch feedback / pulse animation on cell press */
+  td.pulse {
+    transform: scale(0.98);
+    box-shadow: 0 10px 26px rgba(99,102,241,0.06);
+    transition: transform 160ms ease, box-shadow 160ms ease;
+  }
+}
+
+/* Safe-area support for iOS notch and Android cutouts */
+body {
+  padding: calc(env(safe-area-inset-top, 0px) + 0.5rem) calc(env(safe-area-inset-right, 0px) + 0.5rem) calc(env(safe-area-inset-bottom, 0px) + 0.5rem) calc(env(safe-area-inset-left, 0px) + 0.5rem) !important;
+}
+
+/* Override any JavaScript-set styles with maximum specificity */
+.board-grid.board-grid.board-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 1px !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.board-grid.board-grid.board-grid .cell.cell.cell {
+  width: auto !important;
+  height: auto !important;
+  min-height: 50px !important;
+  max-height: 50px !important;
+  aspect-ratio: 1 / 1 !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 3px !important;
+  font-size: 0.55rem !important;
+  line-height: 0.9 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.board-grid.board-grid.board-grid .cell.cell.cell .cell-inner.cell-inner.cell-inner {
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0px !important;
+  margin: 0px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  hyphens: auto !important;
+}
+
+/* Mobile overrides with maximum specificity */
+@media (max-width: 640px) {
+  .board-grid.board-grid.board-grid .cell.cell.cell {
+    min-height: 74px !important;
+    max-height: 74px !important;
+    font-size: 0.8rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .board-grid {
+    gap: 3px !important;
+  }
+  
+  .board-grid .cell .cell-inner {
+    font-size: 0.8rem !important;
+    line-height: 1.1 !important;
+  }
+  
+  .controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  #calledNumbers {
+    font-size: 1.1rem;
+    margin: 8px 0;
+  }
+  
+  .msg {
+    font-size: 0.95rem;
+  }
+}
+
+/* Improve touch feel */
+button, input, select {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  touch-action: manipulation;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+  40% {transform: translateY(-20px);}
+  60% {transform: translateY(-10px);}
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Pulse animation for marked cells */
+.board-grid .cell.marked {
+  animation: pulse 0.3s ease;
+}
+
+/* Bounce animation for win messages */
+.msg.success {
+  animation: bounce 0.5s ease;
+}
+
+/* Confetti container */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  animation: confetti 3s ease-in-out forwards;
+}
+
+/* helper: visually hidden */
+.sr-only { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
+

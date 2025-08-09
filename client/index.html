@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1720" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="apple-touch-icon" href="/rocket.png" />
+    <title>Bingo Activity</title>
+    <script src="/env.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Embedded App SDK bootstrap (graceful fallback if not available) -->
+    <script>
+      // Discord Embedded App SDK may be injected by the Activity environment.
+      // If present, initialize it from client code. Otherwise we'll fall back to a local dev flow.
+      // This placeholder does not load a remote script to avoid external dependency in this template.
+      window.DiscordActivity = window.DiscordActivity || null;
+    </script>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
