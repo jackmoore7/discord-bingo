@@ -147,30 +147,35 @@ const THEMES = {
  ds9: {
     name: "Star Trek: Deep Space Nine",
     items: [
-      "Rule of acquisition",
-      "Sexual tension between Odo and Quark",
-      "Pretend to be nice to Cardassians",
-      "Miles and Keiko disagree / argue",
-      "Jake and Nog sit above promenade",
-      "Odo shapeshifts",
-      "Sisko misgenders Jadzia",
-      "Gaslighting",
-      "Morn!",
-      "Flashing light",
-      "Kira in just her tank top",
-      "Bashir gets pushed against a wall",
       "Racism",
+      "Morn!",
+      "O'brien fixes something",
       "Odo accuses Quark",
-      "Sisko sits on his little couch",
-      "Odo is authoritarian",
-      "Problem could be solved with CCTV",
-      "Baseball mentioned / Baseball shown",
-      "Prophets mentioned",
+      "\"Dabo girl\" mentioned",
+      "Rule of acquisition",
       "Wormhole gets used",
-      "Odo solves the problem",
-      "Dabo girl mentioned",
+      "Gaslighting",
+      "Baseball mentioned",
+      "Kira in just a tank top",
+      "Jake & Nog sit above promenade",
+      "Should have had CCTV",
+      "Odo shapeshifts",
+      "Odo is authoritarian",
+      "Bashir pushed against wall",
       "Quark moans",
-      "Cardassian politics mentioned"
+      "Quark is unfair to Rom",
+      "Prophets mentioned",
+      "Sisko talks about Curzon",
+      "Odo and Quark sexual tension",
+      "Odo solves the problem",
+      "Miles and Keiko disagree",
+      "Flashing lights",
+      "Flashback / Vision",
+      "Someone gets arrested",
+      "Screen has bad UI",
+      "Maquis",
+      "Garak knows more than he says",
+      "Fake niceness"
     ],
   },
 };
@@ -318,7 +323,7 @@ wss.on("connection", (ws) => {
       if (theme && !game.themeName) {
         if (THEMES[theme]) {
           game.themeName = theme;
-          game.themeItems = THEMES[theme].items.slice();
+          game.themeItems = THEMES[theme].items.slice(24); // Make sure at most 24 items
           game.numberPool = createPoolFromTheme(theme);
         } else {
           // Unknown theme; ignore and keep default pool

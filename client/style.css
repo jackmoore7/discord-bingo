@@ -255,7 +255,7 @@ select:focus-visible,
 }
 .board-grid .cell.marked {
   background: linear-gradient(180deg, rgba(52,211,153,0.12), rgba(52,211,153,0.06)) !important;
-  border-color: rgba(52,211,153,0.25) !important;
+  border-color: rgba(190, 230, 215, 0.631) !important;
   box-shadow: 0 3px 9px rgba(52,211,153,0.06) !important;
 }
 .board-grid .cell.free-cell {
