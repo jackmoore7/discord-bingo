@@ -254,9 +254,9 @@ select:focus-visible,
   line-height: inherit !important;
 }
 .board-grid .cell.marked {
-  background: linear-gradient(180deg, rgba(52,211,153,0.12), rgba(52,211,153,0.06)) !important;
+  background: linear-gradient(180deg, rgba(15, 221, 145, 0.12), rgba(15, 221, 145, 0.06)) !important;
   border-color: rgba(190, 230, 215, 0.631) !important;
-  box-shadow: 0 3px 9px rgba(52,211,153,0.06) !important;
+  box-shadow: 0 3px 9px rgba(15, 221, 145, 0.06) !important;
 }
 .board-grid .cell.free-cell {
   background: linear-gradient(180deg, rgba(99,102,241,0.08), rgba(99,102,241,0.03)) !important;
